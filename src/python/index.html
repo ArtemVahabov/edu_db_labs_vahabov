@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <title>REST API кнопки</title>
+  <style>
+    body { font-family: sans-serif; margin: 30px; }
+    button { margin: 5px; padding: 10px; }
+    input { margin: 5px; }
+    pre { background: #f0f0f0; padding: 10px; }
+  </style>
+</head>
+<body>
+
+  <h1>REST API</h1>
+
+  <button onclick="getUsers()">GET /users</button><br><br>
+
+  <button onclick="createUser()">POST /users</button>
+  <br>
+
+  <label>Id для видалення:</label>
+  <input type="number" id="deleteId" min="1" value="1">
+  <button onclick="deleteUser()">DELETE /users/{id}</button>
+
+  <h3>Відповідь:</h3>
+  <pre id="response"></pre>
+
+  <script>
+    const apiUrl = 'http://127.0.0.1:5000';
+    let nextId = 4;
+
+    function getUsers() {
+      fetch(`${apiUrl}/users`)
+        .then(res => res.json())
+        .then(data => {
+          document.getElementById('response').textContent = JSON.stringify(data, null, 2);
+
+          const maxId = data.reduce((max, u) => Math.max(max, u.id), 0);
+          nextId = maxId + 1;
+        })
+        .catch(err => console.error(err));
+    }
+
+    function createUser() {
+      const newUser = {
+        id: nextId,
+        email: `test${nextId}@user.com`,
+        last_name: `Тестовий${nextId}`,
+        first_name: `Користувач${nextId}`,
+        role_id: 3
+      };
+
+      fetch(`${apiUrl}/users`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newUser)
+      })
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById('response').textContent = JSON.stringify(data, null, 2);
+        nextId++;
+      })
+      .catch(err => console.error(err));
+    }
+
+    function deleteUser() {
+      const userId = document.getElementById('deleteId').value;
+
+      fetch(`${apiUrl}/users/${userId}`, {
+        method: 'DELETE'
+      })
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById('response').textContent = JSON.stringify(data, null, 2);
+      })
+      .catch(err => console.error(err));
+    }
+  </script>
+
+</body>
+</html>
