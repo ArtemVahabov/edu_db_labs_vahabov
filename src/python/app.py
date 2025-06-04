@@ -5,7 +5,6 @@ from flask_cors import CORS
 app = Flask(__name__)
 CORS(app)
 
-# Абсолютний шлях до БД
 DB_PATH = r"E:\Lab_6_BD\src\sql\lab6.db"
 
 
@@ -15,7 +14,7 @@ def serve_interface():
 
 
 def query_db(query, args=(), one=False, commit=False):
-    conn = sqlite3.connect(DB_PATH, timeout=10)  # 10 сек на випадок блокування
+    conn = sqlite3.connect(DB_PATH, timeout=10)
     conn.row_factory = sqlite3.Row
     cur = conn.cursor()
     try:
@@ -29,7 +28,6 @@ def query_db(query, args=(), one=False, commit=False):
         conn.close()
 
 
-# -------------------- USERS --------------------
 @app.route('/users', methods=['GET'])
 def get_users():
     users = query_db("SELECT * FROM User")
@@ -70,7 +68,6 @@ def delete_user(user_id):
     return jsonify({'message': 'User deleted'})
 
 
-# -------------------- QUIZZES --------------------
 @app.route('/quizzes', methods=['GET'])
 def get_quizzes():
     quizzes = query_db("SELECT * FROM Quiz")

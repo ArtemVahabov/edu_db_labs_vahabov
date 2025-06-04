@@ -1,6 +1,5 @@
 import sqlite3
 
-# Шлях до SQL-файлу та бази
 SQL_FILE = r"E:\Lab_6_BD\src\sql\lab6.sql"
 DB_FILE = r"E:\Lab_6_BD\src\sql\lab6.db"
 
